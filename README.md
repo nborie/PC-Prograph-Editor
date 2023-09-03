@@ -31,13 +31,13 @@ North-west of the window present a message adapted the current state of the appl
 
 ### Bipolar triangulation
 
-TODO
+The left canva present the triangulation of the bipolar sphere with two kind of pieces. Since edges of the triangulation are oriented, one could have red pieces with two inputs and one output (possibly at infinity for the upper red triangle which is drwan rounded) ; or the pieces are blue with a single input and two outputs (the input can come from infinity for the bottom blue triangle which is drwan rounded). This is not the usual way to draw triangulation 
 
 ### Rectangular Young Standard Tableaux with three lines
 
-TODO
+At the upper right part of the screen, the 3 rows rectangular standard Young tableau is displayed. This last one is compute by a depth first search transversal of the PC-Prograph.
 
 ### PC-prograph (dual side)
 
-TODO
+The right canva present the dual graph of the triangulation which is, by the theory, a Product-Coproduct prograph. Operators coproduct and product are placed at the gravity center of each triangle. Thus, we use some Bezier curves to link each operator using the edges of the triangulation.
 

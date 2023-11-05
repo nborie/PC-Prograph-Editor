@@ -22,6 +22,7 @@ manipulate finite triangulations of the sphere build by hand.
 
 import sys
 import tkinter as tk
+import webbrowser
 from PIL import Image, ImageTk
 from enum import Enum
 
@@ -371,22 +372,35 @@ class prographApp():
         label3.grid(row=0, column=2, padx=20)
         tk.Label(new_win, text="Welcome on the PC Prograph Viewer Editor",
                  font=('Helvetica', '24', 'bold italic')).grid(row=1, column=0, columnspan=3)
-        long_text="""A small application that will help you to understand correspondences
+        long_text="""A small application that will help you to understand the bijection 
         between triangulations of the sphere and Product Coproduct prographs.
         By Nicolas Borie (<nicolas dot borie at univ-eiffel redot fr>)."""
         tk.Label(new_win, text=long_text).grid(row=2, column=0, columnspan=3)
         tk.Label(new_win, text="Last version of sources",
                  font=('Helvetica', '24', 'bold italic')).grid(row=3, column=0, columnspan=3)
-        long_text="""TODO sources..."""
+        long_text="""To get the last version of sources, you should go to the github
+        repository : https://github.com/nborie/PC-Prograph-Editor"""
         tk.Label(new_win, text=long_text).grid(row=4, column=0, columnspan=3)
         tk.Label(new_win, text="Documentation",
                  font=('Helvetica', '24', 'bold italic')).grid(row=5, column=0, columnspan=3)
-        long_text="""TODO documentation..."""
+        long_text="""Most of the documentation is available online here 
+        https://github.com/nborie/PC-Prograph-Editor#readme"""
         tk.Label(new_win, text=long_text).grid(row=6, column=0, columnspan=3)
         tk.Label(new_win, text="References",
                  font=('Helvetica', '24', 'bold italic')).grid(row=7, column=0, columnspan=3)
-        long_text="""TODO references..."""
-        tk.Label(new_win, text=long_text).grid(row=8, column=0, columnspan=3)
+        # long_text="""TODO references..."""
+        # tk.Label(new_win, text=long_text).grid(row=8, column=0, columnspan=3)
+        def callback_url(url):
+            webbrowser.open_new(url)
+        long_text="""Three-dimensional Catalan numbers and product-coproduct prographs"""
+        article1 = tk.Label(new_win, text=long_text, fg="blue", cursor="hand2")
+        article1.grid(row=9, column=0, columnspan=3)
+        article1.bind("<Button-1>", lambda e: callback_url("https://arxiv.org/abs/1704.00212"))
+        long_text="""Product-Coproduct Prographs and Triangulations of the Sphere"""
+        article2 = tk.Label(new_win, text=long_text, fg="blue", cursor="hand2")
+        article2.grid(row=10, column=0, columnspan=3)
+        article2.bind("<Button-1>", lambda e: callback_url("https://arxiv.org/abs/2202.05757"))
+
 
 #####################################################################
 #                SET AND LAUNCH THE APPLICATION                     #

@@ -381,7 +381,7 @@ class SYT3lines():
 
     def coproducts_outputs(self):
         """
-        Returns the list of coproduct outputs. Each coproduct will be described
+        Returns the list of coproduct outputs. Each coproduct will be dgit@github.com:nborie/PC-Prograph-Editor.gitescribed
         by a couple of integer `(left, right)` where `left` is the label of
         wire linking the left output of the coproduct and `right` is the label
         of the wire linking the right output of the coproduct.
@@ -409,6 +409,66 @@ class SYT3lines():
                 j = j-1
             coprods.append( (left+1, right+1) )
         return coprods
+
+    def faces(self):
+        """
+        Returns the list of faces appearing in the program. The faces are 
+        described by the ordered list of labels of the edges delimiting them.
+
+        EXAMPLES::
+
+        >>> T = SYT3lines([[8, 9, 11, 14, 15], [2, 7, 10, 12, 13], [1, 3, 4, 5, 6]])
+        >>> T.faces()
+        [[1, 2, 10, 12], [1, 3, 14, 15], [2, 3, 4, 5, 6, 7, 9], [7, 8], [6, 8, 9, 10, 11], [5, 11, 12, 13, 15], [4, 13, 14]]
+        """
+        ans =[]
+        prods = self.products_inputs()
+        coprods = self.coproducts_outputs()
+        # Inner function to build left border
+        def next_left(index):
+            for (l, r) in coprods:
+                if index == l-1:
+                    return r
+            for (l, r) in prods:
+                if index == r:
+                    return r+1
+            return None
+        # Inner function to build right border
+        def next_right(index):
+            for (l, r) in coprods:
+                if index == l-1:
+                    return l
+            for (l, r) in prods:
+                if index == l:
+                    return r+1
+            return None
+        # First left face
+        face = []
+        current_edge = 1
+        while current_edge != self._size*3 + 1:
+            face.append(current_edge)
+            current_edge = next_right(current_edge)
+        ans.append(face.copy())
+        # second right face
+        face = []
+        current_edge = 1
+        while current_edge != self._size*3 + 1:
+            face.append(current_edge)
+            current_edge = next_left(current_edge)
+        ans.append(face.copy())
+        # Other general faces
+        for (l, r) in coprods:
+            face = []
+            current_edge = l
+            while current_edge != None:
+                face.append(current_edge)
+                current_edge = next_left(current_edge)
+            current_edge = r
+            while current_edge != None:
+                face.append(current_edge)
+                current_edge = next_right(current_edge)
+            ans.append(face.copy())
+        return ans
 
     def edge_type(self, i):
         """
@@ -905,97 +965,6 @@ class RectSYT3lines():
                             new = True
             intervals = new_intervals
         return intervals
-
-    def is_lattice(self, verbose=False):
-        """
-        Return `True` if `sefl` is a lattice 
-        """
-        self.__set_list()
-        list_all = self._list
-
-        def unrank(i):
-            return list_all[i]
-
-        def rank(syt):
-            for ind, elem in enumerate(list_all):
-                if elem == syt:
-                    return ind
-
-        def just_under_elem(i):
-            return map(rank, unrank(i).lower_elements())
-        d_max = {}
-        # rank_max = rank(self.max_element())
-        # d_max[rank_max] = set([rank_max])
-        # prev_layer = [rank_max]
-        # if verbose:
-        #     print("Element maximal :")
-        #     print(unrank(rank_max))
-        #     print(rank_max)
-        # while len(prev_layer) > 0:
-        #     current_layer = set([])
-        #     for elem in prev_layer:
-        #         for i in just_under_elem(elem):
-        #             current_layer.add(i)
-        #             if i not in d_max:
-        #                 d_max[i] = set([])
-        #             d_max[i].add(i)
-        #             for j in d_max[elem]:
-        #                 d_max[i].add(j)
-        #     prev_layer = current_layer
-        for i in range(len(list_all)):
-            d_max[i] = set([i])
-        new_fusion = True
-        while new_fusion:
-            new_fusion = False
-            for i in range(len(list_all)):
-                for j in just_under_elem(i):
-                    if not d_max[i].issubset(d_max[j]):
-                        new_fusion = True
-                        for e in d_max[i]:
-                            d_max[j].add(e)
-        if verbose:
-            print(d_max)
-        nb_not_comparable = 0
-        for i in range(len(list_all)):
-            for j in range(i+1, len(list_all)):
-                if i not in d_max[j] and j not in d_max[i]:
-                    nb_not_comparable += 1
-                    if verbose:
-                        print("La paire suivante est incomparable :")
-                        print(unrank(i))
-                        print(unrank(j))
-                    intersect = set([])
-                    for e in d_max[i]:
-                        if e in d_max[j]:
-                            intersect.add(e)
-                    if verbose:
-                        print("Taille de l'intersection : ", str(len(intersect)))
-                    inter_size = len(intersect)
-                    join_found = False
-                    for e in intersect:
-                        if len(d_max[e]) == inter_size:
-                            if verbose:
-                                print("join -->")
-                                print(unrank(e))
-                            if d_max[e] != intersect:
-                                return d_max, False
-                            else:
-                                join_found = True
-                    if not join_found:
-                        print("Grave erreur dans l'aglorithmie : aucun join trouvé")
-                        for e in intersect:
-                            print(e, unrank(e))
-                        print("Element au dessus du premier :")
-                        for e in d_max[i]:
-                            print(e, unrank(e))
-                        print("Element au dessus du second :")
-                        for e in d_max[j]:
-                            print(e, unrank(e))
-                        if (i, j) == (15, 17):
-                            return d_max, False
-        print(str(nb_not_comparable) + " paires étaient incomparables")
-        return d_max, True
-                
 
                 
         

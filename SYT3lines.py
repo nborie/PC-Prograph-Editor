@@ -381,7 +381,7 @@ class SYT3lines():
 
     def coproducts_outputs(self):
         """
-        Returns the list of coproduct outputs. Each coproduct will be dgit@github.com:nborie/PC-Prograph-Editor.gitescribed
+        Returns the list of coproduct outputs. Each coproduct will be described
         by a couple of integer `(left, right)` where `left` is the label of
         wire linking the left output of the coproduct and `right` is the label
         of the wire linking the right output of the coproduct.
